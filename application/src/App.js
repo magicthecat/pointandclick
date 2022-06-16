@@ -61,12 +61,7 @@ const pages = [
     text: "The Team",
     description: "Meet the team!"
   },
-  {
-    id: 9,
-    route: "/visitus",
-    text: "Visit us",
-    description: "Book an appointment to visit us"
-  },
+
   {
     id: 10,
     route: "/offers",
@@ -79,12 +74,7 @@ const pages = [
     text: "Shop",
     description: "Browse our online shop"
   },
-  {
-    id: 11,
-    route: "/checkout",
-    text: "Check Out",
-    description: "Check out your basket"
-  },
+
   {
     id: 12,
     route: "/articles",
@@ -104,34 +94,16 @@ const pages = [
     description: "these are drinks we like"
   },
   {
-    id: 14,
+    id: 15,
     route: "/gifts",
     text: "Gifts",
     description: "Browse our great range of gift ideas"
   },
   {
-    id: 14,
+    id: 16,
     route: "/legal",
     text: "Legal",
     description: "All the legal stuff"
-  },
-  {
-    id: 14,
-    route: "/privacy ",
-    text: "Privacy Policy",
-    description: "Your privacy is important"
-  },
-  {
-    id: 15,
-    route: "/cookies",
-    text: "Cookie Policy",
-    description: "Beware the cookie monster"
-  },
-  {
-    id: 16,
-    route: "/terms",
-    text: "Terms of Use",
-    description: "how you can use our website"
   }
 ]
 
@@ -164,6 +136,7 @@ class Routes extends React.Component {
     this.state = {};
   }
     render() {
+      console.log(this.props.routes)
 
       return(
 
@@ -247,7 +220,7 @@ class ContextTest extends React.Component {
 
     return (
     <>
-        <h3 style={{color: theme.foreground}}>{this.getText(this.props.value)} {this.props.value} </h3>
+        <h3 style={{color: theme.foreground}}>{this.props.value} </h3>
     </>)
   }
 
@@ -414,12 +387,13 @@ console.log(this.findText())
         <Route path="/">
           <div className="main">
             <h1>Fiber Three Menu </h1>
+            <hr/>
             <PreviewText text={this.findText()}/>
             <ContextTest value={this.findDescription()}/>
           </div>
 
 
-          <div  style={{ width: "80vw", height: "60vh", margin: "5vmin" }}>
+          <div  style={{ width: "80vw", height: "60vh", margin: "5vmin"}}>
 
             <Canvas shadows dpr={[3, 2]} gl={{ alpha: true }} camera={{ position: [-4, 3, -5], fov: 45 }}>
 <color attach="background" args={['white']} />
