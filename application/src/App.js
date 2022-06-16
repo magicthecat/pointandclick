@@ -140,10 +140,10 @@ class Routes extends React.Component {
 
       return(
 
-        this.props.routes.map(route => 
+        this.props.routes.map(page => 
 
-          <Route path={"/" + route.id}>
-            <p>{route.text}</p>
+          <Route path={page.route}>
+            <p>{page.text}</p>
             </Route>
           )
 
@@ -229,7 +229,7 @@ class ContextTest extends React.Component {
 ContextTest.contextType = ThemeContext;
 
 
-class ThemedCanvas extends React.Component {
+class Cube extends React.Component {
   constructor(props) {
     super(props);
     this.state = { color: ""};
@@ -282,11 +282,15 @@ class ThemedCanvas extends React.Component {
   
   }
 
+  findRoute() {
+    return pages[this.props.id -1].route 
+  }
+
  goToLink()
 
   {
     const url = window.location.protocol + "//" + window.location.host;
-    window.open(url  + "/" + this.props.id, "_blank");
+    window.open(url  +  this.findRoute(), "_blank");
   }
 
   setOutColor()
@@ -325,7 +329,7 @@ class ThemedCanvas extends React.Component {
 
 }
 
-ThemedCanvas.contextType = ThemeContext;
+Cube.contextType = ThemeContext;
 
 
 export default class App extends React.Component {
@@ -399,26 +403,26 @@ console.log(this.findText())
 <color attach="background" args={['white']} />
     <ambientLight />
     <Physics>
-          <ThemedCanvas id="1" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 0]}  />
+          <Cube id="1" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 0]}  />
        
-          <ThemedCanvas id="2" changeTheme={this.toggleTheme} changePreview={this.togglePreview}  theme={this.state.theme} position={[9, -5, 0]}  />
-          <ThemedCanvas id="3"  changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 0]}  />
-          <ThemedCanvas id="4" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 0]}  />
+          <Cube id="2" changeTheme={this.toggleTheme} changePreview={this.togglePreview}  theme={this.state.theme} position={[9, -5, 0]}  />
+          <Cube id="3"  changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 0]}  />
+          <Cube id="4" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 0]}  />
 
-          <ThemedCanvas id="5" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 1.5]}  />
-          <ThemedCanvas id="6" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 1.5]}  />
-          <ThemedCanvas id="7" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 1.5]}  />
-          <ThemedCanvas id="8" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 1.5]}  />
+          <Cube id="5" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 1.5]}  />
+          <Cube id="6" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 1.5]}  />
+          <Cube id="7" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 1.5]}  />
+          <Cube id="8" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 1.5]}  />
 
-          <ThemedCanvas id="9" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 3]}  />
-          <ThemedCanvas id="10" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 3]}  />
-          <ThemedCanvas id="11" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 3]}  />
-          <ThemedCanvas id="12" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 3]}  />
+          <Cube id="9" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 3]}  />
+          <Cube id="10" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 3]}  />
+          <Cube id="11" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 3]}  />
+          <Cube id="12" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 3]}  />
 
-          <ThemedCanvas id="13" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 4.5]}  />
-          <ThemedCanvas id="14" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 4.5]}  />
-          <ThemedCanvas id="15" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 4.5]}  />
-          <ThemedCanvas id="16" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 4.5]}  />
+          <Cube id="13" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 4.5]}  />
+          <Cube id="14" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 4.5]}  />
+          <Cube id="15" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 4.5]}  />
+          <Cube id="16" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 4.5]}  />
         
    
 
