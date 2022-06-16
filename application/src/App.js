@@ -1,9 +1,8 @@
 import './App.css';
 import React, { Component, useContext, useState, useEffect } from 'react'
 import { Link, Route } from "wouter"
-import { Canvas } from '@react-three/fiber';
-import { usePlane, Physics, useBox } from '@react-three/cannon';
-
+import {  Canvas } from '@react-three/fiber';
+import { PresentationControls, Sampler, Box, Float, Edges } from '@react-three/drei'
 
 const pages = [
   {
@@ -305,7 +304,20 @@ class Cube extends React.Component {
   render() {
 
 
+
     return (
+<PresentationControls
+  global={false} // Spin globally or by dragging the model
+  cursor={true} // Whether to toggle cursor style on drag
+  snap={false} // Snap-back to center (can also be a spring config)
+  speed={3} // Speed factor
+  zoom={1} // Zoom factor when half the polar-max is reached
+  rotation={[0, 0, 0]} // Default rotation
+  polar={[0, Math.PI / 2]} // Vertical limits
+  azimuth={[-Infinity, Infinity]} // Horizontal limits
+  config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
+>
+
 
   <mesh
         onClick={(e) => this.changeTheme()} receiveShadow castShadow 
@@ -316,12 +328,18 @@ class Cube extends React.Component {
         position={this.props.position}
 
         >
+<Box>
 
+<meshLambertMaterial color={this.state.color} />
+      <Edges
+      scale={1.05}
+      threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+      color="black"
+    />    
+  </Box>
 
-    
-    <boxGeometry />
-    <meshLambertMaterial color={this.state.color} />
   </mesh>
+  </PresentationControls>
 
     );
 
@@ -393,16 +411,26 @@ console.log(this.findText())
             <h1>Fiber Three Menu </h1>
             <hr/>
             <PreviewText text={this.findText()}/>
+            
+            
             <ContextTest value={this.findDescription()}/>
           </div>
 
 
           <div  style={{ width: "80vw", height: "60vh", margin: "5vmin"}}>
-
-            <Canvas shadows dpr={[3, 2]} gl={{ alpha: true }} camera={{ position: [-4, 3, -5], fov: 45 }}>
+{/* z == -5 / fov = 45  / dpr 3, 2*/}
+            <Canvas shadows dpr={[5, 2]} gl={{ alpha: true }} camera={{ position: [-4, 3, -5], fov: 40 }}>
 <color attach="background" args={['white']} />
+<Float
+  speed={1.5} // Animation speed, defaults to 1
+  rotationIntensity={0.25} // XYZ rotation intensity, defaults to 1
+  floatIntensity={0.25} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
+  floatingRange={[1, 1.5]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]
+>
+
     <ambientLight />
-    <Physics>
+
+
           <Cube id="1" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 0]}  />
        
           <Cube id="2" changeTheme={this.toggleTheme} changePreview={this.togglePreview}  theme={this.state.theme} position={[9, -5, 0]}  />
@@ -424,9 +452,9 @@ console.log(this.findText())
           <Cube id="15" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 4.5]}  />
           <Cube id="16" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 4.5]}  />
         
-   
 
-          </Physics>
+          </Float>
+
       </Canvas>
       </div>
       </Route>
