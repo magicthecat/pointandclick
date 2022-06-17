@@ -2,7 +2,9 @@ import './App.css';
 import React, { Component, useContext, useState, useEffect } from 'react'
 import { Link, Route } from "wouter"
 import {  Canvas } from '@react-three/fiber';
-import { PresentationControls, Sampler, Box, Float, Edges } from '@react-three/drei'
+import { CubeCamera, OrbitControls, PresentationControls, PerspectiveCamera, TrackballControls, MapControls, FirstPersonControls, Sampler, Box, Float, Edges } from '@react-three/drei'
+import { Game } from './Game';
+import { Ground } from './Game';
 
 const pages = [
   {
@@ -319,6 +321,11 @@ class Cube extends React.Component {
 >
 
 
+<CubeCamera resolution={256} frames={Infinity} near={1} far={1000}>
+  {(texture) => (
+
+
+
   <mesh
         onClick={(e) => this.changeTheme()} receiveShadow castShadow 
         onDoubleClick={(e) => this.goToLink()} 
@@ -339,6 +346,9 @@ class Cube extends React.Component {
   </Box>
 
   </mesh>
+    )}
+    </CubeCamera>
+    
   </PresentationControls>
 
     );
@@ -405,7 +415,9 @@ console.log(this.findText())
         <ThemeContext.Provider value={this.state.theme}>
 
 <Routes routes={pages} />
-        
+        <Route path="/game">
+          <Game/>
+          </Route>
         <Route path="/">
           <div className="main">
             <h1>Fiber Three Menu </h1>
@@ -417,9 +429,12 @@ console.log(this.findText())
           </div>
 
 
-          <div  style={{ width: "80vw", height: "60vh", margin: "5vmin"}}>
-{/* z == -5 / fov = 45  / dpr 3, 2*/}
+          <div  style={{ width: "80vw", height: "80vh", margin: "5vmin"}}>
             <Canvas shadows dpr={[5, 2]} gl={{ alpha: true }} camera={{ position: [-4, 3, -5], fov: 40 }}>
+              <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} zoomSpeed={2.5} />
+<MapControls/>
+<FirstPersonControls/>
+
 <color attach="background" args={['white']} />
 <Float
   speed={1.5} // Animation speed, defaults to 1
