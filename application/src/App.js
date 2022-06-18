@@ -1,29 +1,47 @@
 import './App.css';
-import React, { Component, useContext, useState, useEffect } from 'react'
+import React, { Component, useContext, useState, useEffect, useMemo, useRef } from 'react'
 import { Link, Route } from "wouter"
-import {  Canvas } from '@react-three/fiber';
-import { CubeCamera, OrbitControls, PresentationControls, PerspectiveCamera, TrackballControls, MapControls, FirstPersonControls, Sampler, Box, Float, Edges } from '@react-three/drei'
+import {  Canvas,  useThree, useFrame } from '@react-three/fiber';
+import {Box, Reflector, MeshDistortMaterial, MeshWobbleMaterial, Html, Text, Icosahedron, CubeCamera, OrbitControls, PresentationControls, PerspectiveCamera, Float, Edges, useTexture } from '@react-three/drei'
 import { Game } from './Game';
-import { Ground } from './Game';
+import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing';
+import * as THREE from 'three'
+import { AboutUsPage, blog } from './pages/aboutPage';
+import { animated, useSpring } from '@react-spring/three';
+import CameraControls from 'camera-controls'
+import FadeInOut from './FadeIn';
+
+import { welcome } from './pages/aboutPage';
+function createMarkup(data) {
+  return {__html: data};
+}
+
+
+
+
 
 const pages = [
   {
     id: 1,
     route: "/welcome",
     text: "Welcome",
-    description: "This is the welcome page."
+    description: "To a Fiber Three Sample site",
+    pageData: welcome
   },
   {
     id: 2,
     route: "/about",
     text: "About",
-    description: "Find out about us"
+    description: "How it is put together...",
+    pageData: "https://dynamicportfolio888.web.app/",
   },
   {
     id: 3,
-    route: "/blog",
-    text: "Blog",
-    description: "This is the blog"
+    route: "/examples",
+    text: "Examples",
+    description: "React Fiber Three Examples",
+    pageData: "https://news-aggregator-f19bc.web.app/news/uk-news"
+
   },
   {
     id: 4,
@@ -31,82 +49,9 @@ const pages = [
     text: "Contact",
     description: "Find ways to contact here"
 
-  },
-  {
-    id: 5,
-    route: "/careers",
-    text: "Careers",
-    description: "About careers"
-  },
-  {
-    id: 6,
-    route: "/news",
-    text: "News",
-    description: "See us in the news"
-  },
-  {
-    id: 7,
-    route: "/gallery",
-    text: "Gallery",
-    description: "This is the gallery"
-  },
-  {
-    id: 8,
-    route: "/events",
-    text: "Events",
-    description: "Here's some events that might interest you"
-  },
-  {
-    id: 9,
-    route: "/team",
-    text: "The Team",
-    description: "Meet the team!"
-  },
-
-  {
-    id: 10,
-    route: "/offers",
-    text: "Offers",
-    description: "View our offers here"
-  },
-  {
-    id: 11,
-    route: "/shop",
-    text: "Shop",
-    description: "Browse our online shop"
-  },
-
-  {
-    id: 12,
-    route: "/articles",
-    text: "Articles",
-    description: "Things that might be interesting"
-  },
-  {
-    id: 13,
-    route: "/food",
-    text: "Food",
-    description: "Food that we like"
-  },
-  {
-    id: 14,
-    route: "/drink",
-    text: "Drinks",
-    description: "these are drinks we like"
-  },
-  {
-    id: 15,
-    route: "/gifts",
-    text: "Gifts",
-    description: "Browse our great range of gift ideas"
-  },
-  {
-    id: 16,
-    route: "/legal",
-    text: "Legal",
-    description: "All the legal stuff"
   }
-]
+
+];
 
 
 
@@ -129,7 +74,13 @@ export const ThemeContext = React.createContext(
 );
 
 
-
+function reverseString(str) {
+  var newString = "";
+  for (var i = str.length - 1; i >= 0; i--) {
+      newString += str[i];
+  }
+  return newString;
+}
 
 class Routes extends React.Component {
   constructor(props) {
@@ -177,6 +128,30 @@ class PreviewText extends React.Component {
     
   }
 }
+
+function TextScene(props) {
+
+    return (
+      <React.Suspense fallback={null}>
+            <Text characters="abcdefghijklmnopqrstuvwxyz0123456789!"
+              color={props.color}
+              fontSize={props.fontSize}
+              maxWidth={50}
+              position={props.position}
+              lineHeight={1}
+              textAlign={'left'}
+              font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
+              anchorX="center"
+              anchorY="middle"
+              
+            >
+            {props.text}
+            </Text>
+          </React.Suspense>
+    )
+  }
+
+
 
 class ContextTest extends React.Component {
   constructor(props) {
@@ -229,11 +204,41 @@ class ContextTest extends React.Component {
 
 ContextTest.contextType = ThemeContext;
 
+function Sphere(props)
+
+{
+  const [bumpMap, normal] = useTexture(['/SurfaceImperfections003_1K_var1.jpg', '/SurfaceImperfections003_1K_Normal.jpg'])
+
+
+
+
+  return(
+<Icosahedron scale={0.75} args={[0.5, 3]}>
+      
+<MeshDistortMaterial color={props.color} 
+    roughness={1}
+    metalness={0.1}
+    bumpScale={0.005}
+    clearcoat={1}
+    clearcoatRoughness={1}
+    radius={1}
+    distort={1}
+    bumpMap={bumpMap}
+    envMap={normal}
+
+
+/>
+
+    
+  </Icosahedron>
+  )
+}
+
 
 class Cube extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { color: ""};
+    this.state = { color: "" };
 
   }
 
@@ -287,11 +292,16 @@ class Cube extends React.Component {
     return pages[this.props.id -1].route 
   }
 
+
+
  goToLink()
 
   {
-    const url = window.location.protocol + "//" + window.location.host;
-    window.open(url  +  this.findRoute(), "_blank");
+//    const url = window.location.protocol + "//" + window.location.host;
+  //  window.open(url  +  this.findRoute(), "_blank");
+    this.props.changePageData(this.props.id)
+
+ 
   }
 
   setOutColor()
@@ -308,24 +318,8 @@ class Cube extends React.Component {
 
 
     return (
-<PresentationControls
-  global={false} // Spin globally or by dragging the model
-  cursor={true} // Whether to toggle cursor style on drag
-  snap={false} // Snap-back to center (can also be a spring config)
-  speed={3} // Speed factor
-  zoom={1} // Zoom factor when half the polar-max is reached
-  rotation={[0, 0, 0]} // Default rotation
-  polar={[0, Math.PI / 2]} // Vertical limits
-  azimuth={[-Infinity, Infinity]} // Horizontal limits
-  config={{ mass: 1, tension: 170, friction: 26 }} // Spring config
->
 
-
-<CubeCamera resolution={256} frames={Infinity} near={1} far={1000}>
-  {(texture) => (
-
-
-
+<>
   <mesh
         onClick={(e) => this.changeTheme()} receiveShadow castShadow 
         onDoubleClick={(e) => this.goToLink()} 
@@ -335,22 +329,12 @@ class Cube extends React.Component {
         position={this.props.position}
 
         >
-<Box>
 
-<meshLambertMaterial color={this.state.color} />
-      <Edges
-      scale={1.05}
-      threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
-      color="black"
-    />    
-  </Box>
+          <Sphere color={this.state.color}/>
 
-  </mesh>
-    )}
-    </CubeCamera>
-    
-  </PresentationControls>
+</mesh>
 
+</>
     );
 
   }
@@ -360,12 +344,14 @@ class Cube extends React.Component {
 Cube.contextType = ThemeContext;
 
 
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       theme: themes.light,
-      preview: 1
+      preview: 1,
+      pageData: "Hello"
     };
 
     this.toggleTheme = (value) => {
@@ -391,6 +377,15 @@ export default class App extends React.Component {
       }));
 
     };
+      this.togglePageData = (value) => {
+        this.setState(state => ({
+          pageData: value,
+          displayPageData: true
+        }));
+      
+  
+
+    };
 
   }
 
@@ -401,6 +396,10 @@ export default class App extends React.Component {
 
   findDescription() {
     return pages[this.state.preview -1].description
+  }
+
+  findPageData() {
+    return pages[this.state.preview -1].pageData
   }
 
 
@@ -419,59 +418,58 @@ console.log(this.findText())
           <Game/>
           </Route>
         <Route path="/">
-          <div className="main">
-            <h1>Fiber Three Menu </h1>
-            <hr/>
-            <PreviewText text={this.findText()}/>
-            
-            
-            <ContextTest value={this.findDescription()}/>
-          </div>
+  
 
 
-          <div  style={{ width: "80vw", height: "80vh", margin: "5vmin"}}>
-            <Canvas shadows dpr={[5, 2]} gl={{ alpha: true }} camera={{ position: [-4, 3, -5], fov: 40 }}>
-              <OrbitControls enableZoom={true} enablePan={true} enableRotate={true} zoomSpeed={2.5} />
-<MapControls/>
-<FirstPersonControls/>
+          <div  style={{left: "10%", width: "80vw", height: "80vh", margin: "5vmin", position: "relative"}}>
+            {/* camera={{ position: [-4, 3, -5], fov: 40 }} */}
+            <Canvas  gl={{ powerPreference: "high-performance" }}  shadows dpr={[5, 2]} gl={{ alpha: true }} >
+              <OrbitControls enableDamping={true} enableZoom={true} enablePan={true} enableRotate={true} zoomSpeed={0.5} />
+      <PerspectiveCamera makeDefault position={[5, 4.5, 20]}  fov={50} dpr={[5, 2]} />
+
 
 <color attach="background" args={['white']} />
+<ambientLight />
+
 <Float
-  speed={1.5} // Animation speed, defaults to 1
+  speed={1.0} // Animation speed, defaults to 1
   rotationIntensity={0.25} // XYZ rotation intensity, defaults to 1
   floatIntensity={0.25} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
-  floatingRange={[1, 1.5]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]
+  floatingRange={[1, 1.25]} // Range of y-axis values the object will float within, defaults to [-0.1,0.1]
 >
+<TextScene position={[6, 5, 3]} fontSize={3} color={this.state.theme.background} text={this.findText()}/>
+              <TextScene position={[6, 3, 3]} fontSize={0.5} color={this.state.theme.foreground} text={this.findDescription()}/>
 
-    <ambientLight />
+    <Cube id="1" changeTheme={this.toggleTheme} changePageData={this.togglePageData} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -1, 3]}  />
+    <Cube id="2"  changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -1, 3]}  />
+    <Cube id="3" changeTheme={this.toggleTheme} changePreview={this.togglePreview}  theme={this.state.theme} position={[9, -1, 3]}  />
+    <Cube id="4" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -1, 3]}  />
 
-
-          <Cube id="1" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 0]}  />
-       
-          <Cube id="2" changeTheme={this.toggleTheme} changePreview={this.togglePreview}  theme={this.state.theme} position={[9, -5, 0]}  />
-          <Cube id="3"  changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 0]}  />
-          <Cube id="4" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 0]}  />
-
-          <Cube id="5" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 1.5]}  />
-          <Cube id="6" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 1.5]}  />
-          <Cube id="7" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 1.5]}  />
-          <Cube id="8" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 1.5]}  />
-
-          <Cube id="9" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 3]}  />
-          <Cube id="10" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 3]}  />
-          <Cube id="11" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 3]}  />
-          <Cube id="12" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 3]}  />
-
-          <Cube id="13" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -5, 4.5]}  />
-          <Cube id="14" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, -5, 4.5]}  />
-          <Cube id="15" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -5, 4.5]}  />
-          <Cube id="16" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -5, 4.5]}  />
-        
-
+         
           </Float>
+          <mesh>
 
+<Html 
+position={[-10, 3, 3]}
+  >
+
+
+
+</Html>
+
+
+</mesh>
       </Canvas>
       </div>
+
+      <FadeInOut show = "show">
+      <div style={{color: "hotpink", marginTop: "25vmin", marginLeft: "10vmin", zIndex: 3, top: 0, bottom: 0, position: "absolute"}}
+      className='page'> 
+<div dangerouslySetInnerHTML={createMarkup(this.findPageData())}/>
+
+
+       </div>
+       </FadeInOut>
       </Route>
         </ThemeContext.Provider>
    

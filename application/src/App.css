@@ -27,6 +27,13 @@ img {
 
 }
 
+.page {
+  font-family: 'Raleway', sans-serif;
+  font-style: "hotpink";
+  position: absolute;
+
+}
+
 .App-header {
   min-height: 100vh;
   display: flex;
