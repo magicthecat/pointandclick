@@ -5,7 +5,7 @@ import { Reflector, MapControls, CameraShake, OrbitControls, useTexture, FirstPe
 import { PointerLockControls, Stars } from '@react-three/drei';
 import { KernelSize } from 'postprocessing'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
-
+import { SquareBlock } from './Isometric';
 
 function Triangle({ color, ...props }) {
 
@@ -54,11 +54,9 @@ export class Game extends Component {
 
             <div  style={{ width: "80vw", height: "60vh", margin: "5vmin"}}>
             <Canvas shadows dpr={[5, 2]} gl={{ alpha: true }} camera={{ position: [-4, 3, -5], fov: 40 }}>
-<color attach="background" args={['hotpink']} />
+<color attach="background" args={['black']} />
 
 
-<FirstPersonControls  />
-<FlyControls/>
 <OrbitControls enableZoom={true} enableRotate={true} />
     <ambientLight />
     <Suspense fallback={null}>
