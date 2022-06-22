@@ -1,3 +1,6 @@
+// https://codepen.io/chrisgannon/pen/NwXdYd - For Typewriter effect
+
+
 import './App.css';
 import React, { Component, useContext, useState, useEffect, useMemo, useRef } from 'react'
 import { Link, Route } from "wouter"
@@ -10,8 +13,11 @@ import { AboutUsPage, blog } from './pages/aboutPage';
 import { animated, useSpring } from '@react-spring/three';
 import CameraControls from 'camera-controls'
 import FadeInOut from './FadeIn';
-
 import { welcome } from './pages/aboutPage';
+import { CityGame } from './CityGame';
+import { Isometric } from './Isometric';
+import { Terrain } from './Terrain';
+import { InstanceTest } from './InstanceTest';
 function createMarkup(data) {
   return {__html: data};
 }
@@ -414,6 +420,23 @@ console.log(this.findText())
         <ThemeContext.Provider value={this.state.theme}>
 
 <Routes routes={pages} />
+
+
+<Route path="/block">
+  <CityGame/>
+</Route>
+
+<Route path="/instance">
+      <InstanceTest/>
+</Route>
+
+<Route path="/iso">
+  <Isometric/>
+</Route>
+
+<Route path="/terrain">
+      <Terrain/>
+</Route>
         <Route path="/game">
           <Game/>
           </Route>
