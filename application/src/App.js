@@ -5,7 +5,7 @@ import './App.css';
 import React, { Component, useContext, useState, useEffect, useMemo, useRef } from 'react'
 import { Link, Route } from "wouter"
 import {  Canvas,  useThree, useFrame } from '@react-three/fiber';
-import {Box, Reflector, MeshDistortMaterial, MeshWobbleMaterial, Html, Text, Icosahedron, CubeCamera, OrbitControls, PresentationControls, PerspectiveCamera, Float, Edges, useTexture } from '@react-three/drei'
+import {Box, Reflector, MeshDistortMaterial,  MeshWobbleMaterial, Html, Text, Icosahedron, CubeCamera, OrbitControls, PresentationControls, PerspectiveCamera, Float, Edges, useTexture } from '@react-three/drei'
 import { Game } from './Game';
 import { EffectComposer, DepthOfField, Bloom, Noise, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three'
@@ -39,21 +39,23 @@ const pages = [
     route: "/about",
     text: "About",
     description: "How it is put together...",
-    pageData: "https://dynamicportfolio888.web.app/",
+    pageData: "This is the about page. This is built using React Fiber Three, Drei & React",
   },
   {
     id: 3,
     route: "/examples",
     text: "Examples",
     description: "React Fiber Three Examples",
-    pageData: "https://news-aggregator-f19bc.web.app/news/uk-news"
+    pageData: "<p> This is where I'm going to provide some links to some examples... </p>"
 
   },
   {
     id: 4,
     route: "/contact",
     text: "Contact",
-    description: "Find ways to contact here"
+    description: "Find ways to contact here",
+    pageData: "<p>This is where contact details might go... </p>"
+
 
   }
 
@@ -219,21 +221,10 @@ function Sphere(props)
 
 
   return(
-<Icosahedron scale={0.75} args={[0.5, 3]}>
+<Icosahedron scale={0.75} args={[0.5, 3, 5]}>
+<meshLambertMaterial color={props.color} />
       
-<MeshDistortMaterial color={props.color} 
-    roughness={1}
-    metalness={0.1}
-    bumpScale={0.005}
-    clearcoat={1}
-    clearcoatRoughness={1}
-    radius={1}
-    distort={1}
-    bumpMap={bumpMap}
-    envMap={normal}
 
-
-/>
 
     
   </Icosahedron>
@@ -444,7 +435,7 @@ console.log(this.findText())
   
 
 
-          <div  style={{left: "10%", width: "80vw", height: "80vh", margin: "5vmin", position: "relative"}}>
+          <div  style={{ width: "100%", height: "100vh", position: "relative"}}>
             {/* camera={{ position: [-4, 3, -5], fov: 40 }} */}
             <Canvas  gl={{ powerPreference: "high-performance" }}  shadows dpr={[5, 2]} gl={{ alpha: true }} >
               <OrbitControls enableDamping={true} enableZoom={true} enablePan={true} enableRotate={true} zoomSpeed={0.5} />
@@ -463,36 +454,46 @@ console.log(this.findText())
 <TextScene position={[6, 5, 3]} fontSize={3} color={this.state.theme.background} text={this.findText()}/>
               <TextScene position={[6, 3, 3]} fontSize={0.5} color={this.state.theme.foreground} text={this.findDescription()}/>
 
-    <Cube id="1" changeTheme={this.toggleTheme} changePageData={this.togglePageData} changePreview={this.togglePreview} theme={this.state.theme} position={[5, -1, 3]}  />
-    <Cube id="2"  changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[7, -1, 3]}  />
-    <Cube id="3" changeTheme={this.toggleTheme} changePreview={this.togglePreview}  theme={this.state.theme} position={[9, -1, 3]}  />
-    <Cube id="4" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[11, -1, 3]}  />
+    <Cube id="1" changeTheme={this.toggleTheme}  changePreview={this.togglePreview} theme={this.state.theme} position={[3, 1, 3]}  />
+    <Cube id="2"  changeTheme={this.toggleTheme}  changePreview={this.togglePreview} theme={this.state.theme} position={[5, 1, 3]}  />
+    <Cube id="3" changeTheme={this.toggleTheme}  changePreview={this.togglePreview}  theme={this.state.theme} position={[7, 1, 3]}  />
+    <Cube id="4" changeTheme={this.toggleTheme} changePreview={this.togglePreview} theme={this.state.theme} position={[9, 1, 3]}  />
 
          
           </Float>
           <mesh>
 
-<Html 
-position={[-10, 3, 3]}
-  >
+          <Html
+          position={[-15, 2.5, -1]}  
+  as='div' // Wrapping element (default: 'div')
+  center // Adds a -50%/-50% css transform (default: false) [ignored in transform mode]
+  fullscreen // Aligns to the upper-left corner, fills the screen (default:false) [ignored in transform mode]
+occlude
+  transform // If true, applies matrix3d transformations (default=false)
+  sprite // Renders as sprite, but only in transform mode (default=false)
 
+  style={{
+    color: "hotpink",
+    fontSize: '20px',
+    width: '100%',
+    padding: '20px'
 
+  }}
+>
+
+  <div className='page' dangerouslySetInnerHTML={createMarkup(this.findPageData())}/>
 
 </Html>
+     
+
+
 
 
 </mesh>
       </Canvas>
       </div>
 
-      <FadeInOut show = "show">
-      <div style={{color: "hotpink", marginTop: "25vmin", marginLeft: "10vmin", zIndex: 3, top: 0, bottom: 0, position: "absolute"}}
-      className='page'> 
-<div dangerouslySetInnerHTML={createMarkup(this.findPageData())}/>
 
-
-       </div>
-       </FadeInOut>
       </Route>
         </ThemeContext.Provider>
    
